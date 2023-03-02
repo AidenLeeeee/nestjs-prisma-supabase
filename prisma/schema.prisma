@@ -7,11 +7,17 @@ datasource db {
   url      = env("SUPABASE_URL")
 }
 
+enum ROLE {
+  ADMIN
+  USER
+}
+
 model User {
   userId  Int    @id @default(autoincrement()) @map("USER_ID")
   name    String @default("unknown name") @map("NAME") @db.VarChar(10)
   email   String @unique @map("EMAIL") @db.VarChar(50)
   profile String @map("PROFILE") @db.Text
+  role    ROLE   @default(USER)
 
   posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
   userInfo UserInfo? @relation("USER_DETAIL_INFO")
@@ -20,9 +26,11 @@ model User {
 }
 
 model Post {
-  postId   Int    @id @default(autoincrement()) @map("POST_ID")
-  content  String @map("CONTENT") @db.Text
-  writerId Int    @map("WRITER_ID")
+  postId   Int      @id @default(autoincrement()) @map("POST_ID")
+  content  String   @map("CONTENT") @db.Text
+  writerId Int      @map("WRITER_ID")
+  hashtag  String[]
+  comments Json
 
   writer User @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
 
