@@ -22,6 +22,7 @@ model User {
   posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
   userInfo UserInfo? @relation("USER_DETAIL_INFO")
 
+  @@index([name], type: Hash)
   @@map("USER")
 }
 
