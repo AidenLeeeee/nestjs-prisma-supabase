@@ -15,7 +15,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     // Middleware
     this.$use(async (params, next) => {
-      console.log(params);
+      console.log('params ->', params);
 
       const res = await next(params);
       return res;
