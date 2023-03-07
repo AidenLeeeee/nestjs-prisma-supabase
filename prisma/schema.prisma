@@ -27,13 +27,11 @@ model User {
 }
 
 model Post {
-  postId   Int      @id @default(autoincrement()) @map("POST_ID")
-  content  String   @map("CONTENT") @db.Text
-  writerId Int      @map("WRITER_ID")
-  hashtag  String[]
-  comments Json
+  postId   Int    @id @default(autoincrement()) @map("POST_ID")
+  content  String @map("CONTENT") @db.Text
+  writerId Int?   @map("WRITER_ID")
 
-  writer User @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
+  writer User? @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
 
   @@map("POST")
 }

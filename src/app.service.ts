@@ -1,19 +1,26 @@
 import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Post as PostModel, Prisma, User as UserModel } from '@prisma/client';
 import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  async getUserWithPost() {
+    return await this.prisma.user.findUnique({
+      where: {
+        userId: 107,
+      },
+      include: {
+        posts: true,
+      },
+    });
   }
 
   async createUser(
     body?: Prisma.UserCreateInput,
-  ): Promise<User | { count: number }> {
+  ): Promise<UserModel | { count: number }> {
     // const newUser = await this.prisma.user.create({
     //   data: {
     //     name: faker.name.firstName(),
@@ -42,14 +49,31 @@ export class AppService {
     //   data,
     // });
 
-    const newUser: User = await this.prisma.user.create({
+    const newUser: UserModel = await this.prisma.user.create({
       data: {
         name: body.name,
         email: faker.datatype.uuid(),
         profile: body.profile,
+        posts: {
+          connect: [{ postId: 6 }, { postId: 7 }, { postId: 8 }],
+        },
       },
     });
 
     return newUser;
+  }
+
+  async createPost(body: Prisma.PostUncheckedCreateInput): Promise<PostModel> {
+    const newPost: PostModel = await this.prisma.post.create({
+      data: {
+        content: faker.lorem.paragraph(),
+        // writerId: Math.round(Math.random() * 100),
+      },
+      include: {
+        writer: true,
+      },
+    });
+
+    return newPost;
   }
 }
