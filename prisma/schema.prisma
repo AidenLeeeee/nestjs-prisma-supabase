@@ -27,13 +27,11 @@ model User {
 }
 
 model Post {
-  postId   Int      @id @default(autoincrement()) @map("POST_ID")
-  content  String   @map("CONTENT") @db.Text
-  writerId Int      @map("WRITER_ID")
-  hashtag  String[]
-  comments Json
+  postId   Int    @id @default(autoincrement()) @map("POST_ID")
+  content  String @map("CONTENT") @db.Text
+  writerId Int?   @map("WRITER_ID")
 
-  writer User @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
+  writer User? @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
 
   @@map("POST")
 }
@@ -44,8 +42,9 @@ model UserInfo {
   weight    Int      @map("WEIGHT") @db.Integer
   address   String   @map("ADDRESS") @db.Text
   createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @updatedAt
 
-  user User @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade)
+  user User @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("USER_INFO")
 }
