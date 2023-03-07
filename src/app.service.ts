@@ -110,27 +110,25 @@ export class AppService {
     //   },
     // });
 
-    // const newInfo = await this.prisma.userInfo.update({
+    const newInfo = await this.prisma.userInfo.update({
+      where: {
+        userId: Number(body.userId),
+      },
+      data: {
+        weight: Number(body.weight),
+      },
+    });
+
+    // const newInfo = await this.prisma.userInfo.updateMany({
     //   where: {
-    //     userId: Number(body.userId),
+    //     userId: {
+    //       in: [102, 104, 106, 107],
+    //     },
     //   },
     //   data: {
     //     address: faker.address.buildingNumber(),
     //   },
-    //   include: {
-    //     user: true,
-    //   },
     // });
-    const newInfo = await this.prisma.userInfo.updateMany({
-      where: {
-        userId: {
-          in: [102, 104, 106, 107],
-        },
-      },
-      data: {
-        address: faker.address.buildingNumber(),
-      },
-    });
 
     return newInfo;
   }
