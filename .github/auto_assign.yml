@@ -1,8 +1,1 @@
-addReviewers: true
-
-addAssignees: AidenLeeeee
-
-reviewers:
-  - AidenLeeeee
-
-numberOfReviewers: 0
+addAssignees: author
