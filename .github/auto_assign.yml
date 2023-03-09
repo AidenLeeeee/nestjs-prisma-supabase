@@ -1,8 +1,1 @@
-addReviewers: true
-
 addAssignees: author
-
-reviewers:
-  - Aiden Lee
-
-numberOfReviewers: 0
