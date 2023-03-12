@@ -44,16 +44,6 @@ export class AppService {
       },
     });
 
-    // const data = new Array(100).fill({}).map((_) => ({
-    //   name: faker.name.firstName().slice(0, 9),
-    //   email: faker.datatype.uuid(),
-    //   profile: faker.lorem.sentences(),
-    // }));
-
-    // const newUser: { count: number } = await this.prisma.user.createMany({
-    //   data,
-    // });
-
     // const newUser: UserModel = await this.prisma.user.create({
     //   data: {
     //     name: body.name,
@@ -68,10 +58,10 @@ export class AppService {
     return newUser;
   }
 
-  async createPost(body: Prisma.PostUncheckedCreateInput): Promise<PostModel> {
+  async createPost(body?: Prisma.PostUncheckedCreateInput): Promise<PostModel> {
     const newPost: PostModel = await this.prisma.post.create({
       data: {
-        content: faker.lorem.paragraph(),
+        content: (body && body.content) || faker.lorem.paragraph(),
         writerId: Math.round(Math.random() * 100),
       },
       include: {
@@ -129,6 +119,41 @@ export class AppService {
     //     address: faker.address.buildingNumber(),
     //   },
     // });
+
+    return newInfo;
+  }
+
+  async createFakeUsers(numOfUsers: number): Promise<{ count: number }> {
+    const data = new Array(numOfUsers).fill({}).map((_) => ({
+      name: faker.name.firstName().slice(0, 9),
+      email: faker.datatype.uuid(),
+      profile: faker.lorem.sentences(),
+    }));
+
+    const newUsers: { count: number } = await this.prisma.user.createMany({
+      data,
+    });
+
+    return newUsers;
+  }
+
+  async createFakeUserInfo(userId: number): Promise<UserInfoModel> {
+    const newInfo: UserInfoModel = await this.prisma.userInfo.upsert({
+      where: {
+        userId,
+      },
+      update: {
+        height: String(Math.round(Math.random() * 100) + 100),
+        weight: Math.round(Math.random() * 100) + 30,
+        address: faker.address.city(),
+      },
+      create: {
+        userId,
+        height: String(Math.round(Math.random() * 100) + 100),
+        weight: Math.round(Math.random() * 100) + 30,
+        address: faker.address.city(),
+      },
+    });
 
     return newInfo;
   }
