@@ -7,10 +7,6 @@ on:
     branches: [develop]
 
 jobs:
-  echo:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo 'This is Test Action!'
   build:
     runs-on: ubuntu-latest
     strategy:

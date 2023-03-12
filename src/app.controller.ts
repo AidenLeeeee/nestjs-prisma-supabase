@@ -34,7 +34,7 @@ export class AppController {
 
   @Post('post')
   async createPost(
-    @Body() body: Prisma.PostUncheckedCreateInput,
+    @Body() body?: Prisma.PostUncheckedCreateInput,
   ): Promise<PostModel> {
     return await this.appService.createPost(body);
   }
@@ -51,5 +51,19 @@ export class AppController {
     @Body() body: Prisma.UserInfoUncheckedUpdateInput,
   ): Promise<UserInfoModel | { count: number }> {
     return await this.appService.patchUser(body);
+  }
+
+  @Post('fakeUsers')
+  async createFakeUsers(
+    @Body('numOfUsers') numOfUsers: number,
+  ): Promise<{ count: number }> {
+    return await this.appService.createFakeUsers(numOfUsers);
+  }
+
+  @Post('fakeUserInfo')
+  async createFakeUserInfo(
+    @Body('userId') userId: number,
+  ): Promise<UserInfoModel> {
+    return await this.appService.createFakeUserInfo(userId);
   }
 }

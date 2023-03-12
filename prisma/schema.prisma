@@ -1,29 +1,36 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("SUPABASE_URL")
+  schemas  = ["study", "statistic", "sub", "test"]
 }
 
-enum ROLE {
-  ADMIN
-  USER
+enum PROVIDER {
+  KAKAO
+  NAVER
+  GOOGLE
+  ETC
+
+  @@schema("study")
 }
 
 model User {
-  userId  Int    @id @default(autoincrement()) @map("USER_ID")
-  name    String @default("unknown name") @map("NAME") @db.VarChar(10)
-  email   String @default(uuid()) @map("EMAIL") @db.VarChar(50)
-  profile String @map("PROFILE") @db.Text
-  role    ROLE   @default(USER)
+  userId   Int      @id @default(autoincrement()) @map("USER_ID")
+  name     String   @default("unknown name") @map("NAME") @db.VarChar(10)
+  provider PROVIDER @default(ETC) @map("PROVIDER")
+  email    String   @default(uuid()) @map("EMAIL") @db.VarChar(50)
+  profile  String   @map("PROFILE") @db.Text
 
   posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
   userInfo UserInfo? @relation("USER_DETAIL_INFO")
 
-  @@index([name], type: Hash)
+  @@unique(name: "USER_PROVIDER_EMAIL_UNIQ", fields: [provider, email])
   @@map("USER")
+  @@schema("study")
 }
 
 model Post {
@@ -34,6 +41,7 @@ model Post {
   writer User? @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
 
   @@map("POST")
+  @@schema("study")
 }
 
 model UserInfo {
@@ -47,4 +55,23 @@ model UserInfo {
   user User @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("USER_INFO")
+  @@schema("study")
+}
+
+model TestTable {
+  id Int @id @map("TEST_ID")
+
+  @@schema("test")
+}
+
+model SubTable {
+  id Int @id @map("SUB_ID")
+
+  @@schema("sub")
+}
+
+model StatisticTable {
+  id Int @id @map("STATISTIC_ID")
+
+  @@schema("statistic")
 }
