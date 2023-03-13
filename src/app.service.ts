@@ -12,13 +12,32 @@ import { PrismaService } from './prisma/prisma.service';
 export class AppService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUserWithPost(): Promise<UserModel> {
+  async getUserWithPost() {
     return await this.prisma.user.findUnique({
       where: {
-        userId: 107,
+        userId: 3,
       },
-      include: {
-        posts: true,
+      select: {
+        userId: true,
+        name: true,
+        provider: true,
+        posts: {
+          select: {
+            postId: true,
+            content: true,
+            writer: {
+              select: {
+                email: true,
+                userInfo: {
+                  select: {
+                    createdAt: true,
+                    address: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }

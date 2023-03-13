@@ -21,7 +21,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getUserWithPost(): Promise<UserModel> {
+  async getUserWithPost() {
     return await this.appService.getUserWithPost();
   }
 
