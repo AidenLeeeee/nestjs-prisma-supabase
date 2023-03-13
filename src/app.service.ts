@@ -58,30 +58,6 @@ export class AppService {
     return newUser;
   }
 
-  async createPost(body?: Prisma.PostUncheckedCreateInput): Promise<PostModel> {
-    const newPost: PostModel = await this.prisma.post.create({
-      data: {
-        content: (body && body.content) || faker.lorem.paragraph(),
-        writerId: Math.round(Math.random() * 100),
-      },
-      include: {
-        writer: true,
-      },
-    });
-
-    return newPost;
-  }
-
-  async deleteUser(userId: number): Promise<{ count: number }> {
-    const old: { count: number } = await this.prisma.user.deleteMany({
-      where: {
-        userId: userId,
-      },
-    });
-
-    return old;
-  }
-
   async patchUser(
     body: Prisma.UserInfoUncheckedUpdateInput,
   ): Promise<UserInfoModel | { count: number }> {
@@ -121,6 +97,49 @@ export class AppService {
     // });
 
     return newInfo;
+  }
+
+  async deleteUser(userId: number): Promise<{ count: number }> {
+    const old: { count: number } = await this.prisma.user.deleteMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return old;
+  }
+
+  async getPostsWithPagination(page: number, take: number) {
+    const [count, posts] = await Promise.all([
+      this.prisma.post.count(),
+      this.prisma.post.findMany({
+        take, // 몇개를 읽어오는지
+        skip: take * (page - 1), // 몇개를 건너뛸건지
+        orderBy: {
+          postId: 'desc',
+        },
+      }),
+    ]);
+
+    return {
+      currentPage: page,
+      totalPage: Math.ceil(count / take),
+      posts,
+    };
+  }
+
+  async createPost(body?: Prisma.PostUncheckedCreateInput): Promise<PostModel> {
+    const newPost: PostModel = await this.prisma.post.create({
+      data: {
+        content: (body && body.content) || faker.lorem.paragraph(),
+        writerId: Math.round(Math.random() * 100),
+      },
+      include: {
+        writer: true,
+      },
+    });
+
+    return newPost;
   }
 
   async createFakeUsers(numOfUsers: number): Promise<{ count: number }> {

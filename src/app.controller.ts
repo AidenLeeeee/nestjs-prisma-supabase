@@ -32,11 +32,11 @@ export class AppController {
     return await this.appService.createUser(body);
   }
 
-  @Post('post')
-  async createPost(
-    @Body() body?: Prisma.PostUncheckedCreateInput,
-  ): Promise<PostModel> {
-    return await this.appService.createPost(body);
+  @Patch('user')
+  async patchUser(
+    @Body() body: Prisma.UserInfoUncheckedUpdateInput,
+  ): Promise<UserInfoModel | { count: number }> {
+    return await this.appService.patchUser(body);
   }
 
   @Delete('user')
@@ -46,11 +46,19 @@ export class AppController {
     return await this.appService.deleteUser(userId);
   }
 
-  @Patch('user')
-  async patchUser(
-    @Body() body: Prisma.UserInfoUncheckedUpdateInput,
-  ): Promise<UserInfoModel | { count: number }> {
-    return await this.appService.patchUser(body);
+  @Get('post')
+  async etPostsWithPagination(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('take', ParseIntPipe) take: number,
+  ) {
+    return await this.appService.getPostsWithPagination(page, take);
+  }
+
+  @Post('post')
+  async createPost(
+    @Body() body?: Prisma.PostUncheckedCreateInput,
+  ): Promise<PostModel> {
+    return await this.appService.createPost(body);
   }
 
   @Post('fakeUsers')
