@@ -1,77 +1,80 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
 } from '@nestjs/common';
 import {
-  Post as PostModel,
-  Prisma,
-  User as UserModel,
-  UserInfo as UserInfoModel,
+    Post as PostModel,
+    Prisma,
+    User as UserModel,
+    UserInfo as UserInfoModel,
 } from '@prisma/client';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    constructor(private readonly appService: AppService) {}
 
-  @Get()
-  async getUserWithPost() {
-    return await this.appService.getUserWithPost();
-  }
+    @Get('user')
+    async getUserWithPost(@Query('userId', ParseIntPipe) userId: number) {
+        return await this.appService.getUserWithPost(userId);
+    }
 
-  @Post('user')
-  async createUser(
-    @Body() body?: Prisma.UserCreateInput,
-  ): Promise<UserModel | { count: number }> {
-    return await this.appService.createUser(body);
-  }
+    @Get('users')
+    async getUser() {
+        return this.appService.getUser();
+    }
 
-  @Patch('user')
-  async patchUser(
-    @Body() body: Prisma.UserInfoUncheckedUpdateInput,
-  ): Promise<UserInfoModel | { count: number }> {
-    return await this.appService.patchUser(body);
-  }
+    @Post('user')
+    async createUser(
+        @Body() body?: Prisma.UserCreateInput,
+    ): Promise<UserModel | { count: number }> {
+        return await this.appService.createUser(body);
+    }
 
-  @Delete('user')
-  async deleteUser(
-    @Query('userId', ParseIntPipe) userId: number,
-  ): Promise<{ count: number }> {
-    return await this.appService.deleteUser(userId);
-  }
+    @Patch('user')
+    async patchUser(
+        @Body() body: Prisma.UserInfoUncheckedUpdateInput,
+    ): Promise<UserInfoModel | { count: number }> {
+        return await this.appService.patchUser(body);
+    }
 
-  @Get('post')
-  async etPostsWithPagination(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('take', ParseIntPipe) take: number,
-  ) {
-    return await this.appService.getPostsWithPagination(page, take);
-  }
+    @Delete('user')
+    async deleteUser(
+        @Query('userId', ParseIntPipe) userId: number,
+    ): Promise<{ count: number }> {
+        return await this.appService.deleteUser(userId);
+    }
 
-  @Post('post')
-  async createPost(
-    @Body() body?: Prisma.PostUncheckedCreateInput,
-  ): Promise<PostModel> {
-    return await this.appService.createPost(body);
-  }
+    @Get('post')
+    async etPostsWithPagination(
+        @Query('page', ParseIntPipe) page: number,
+        @Query('take', ParseIntPipe) take: number,
+    ) {
+        return await this.appService.getPostsWithPagination(page, take);
+    }
 
-  @Post('fakeUsers')
-  async createFakeUsers(
-    @Body('numOfUsers') numOfUsers: number,
-  ): Promise<{ count: number }> {
-    return await this.appService.createFakeUsers(numOfUsers);
-  }
+    @Post('post')
+    async createPost() {
+        return await this.appService.createPost();
+    }
 
-  @Post('fakeUserInfo')
-  async createFakeUserInfo(
-    @Body('userId') userId: number,
-  ): Promise<UserInfoModel> {
-    return await this.appService.createFakeUserInfo(userId);
-  }
+    @Post('fakeUsers')
+    async createFakeUsers(
+        @Body('numOfUsers') numOfUsers: number,
+    ): Promise<{ count: number }> {
+        return await this.appService.createFakeUsers(numOfUsers);
+    }
+
+    @Post('fakeUserInfo')
+    async createFakeUserInfo(
+        @Body('userId') userId: number,
+    ): Promise<UserInfoModel> {
+        return await this.appService.createFakeUserInfo(userId);
+    }
 }
