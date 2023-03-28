@@ -11,11 +11,11 @@ export enum ERole {
 }
 
 export class UserEntity {
-    userId: ObjectId;
-    age: Int;
-    createdAt: Date;
-    height: Float;
-    role: ERole;
+    userId?: ObjectId;
+    age?: Int;
+    createdAt?: Date;
+    height?: Float;
+    role?: ERole;
 
     constructor(
         userId: ObjectId,

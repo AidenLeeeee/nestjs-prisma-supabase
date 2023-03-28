@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL_MONGO")
 }
 
+enum Role {
+  ADMIN
+  USER
+  MANAGER
+}
+
+type Comment {
+  userId    String   @map("_id") @db.ObjectId
+  content   String?
+  createdAt DateTime @default(now()) @db.Timestamp
+}
+
 model User {
   userId    String   @id @default(auto()) @map("_id") @db.ObjectId
   age       Int      @db.Int
@@ -14,11 +26,19 @@ model User {
   createdAt DateTime @default(now()) @db.Timestamp
   role      Role
 
+  posts Post[] @relation("USER_WRITE_POST")
+
   @@map("user")
 }
 
-enum Role {
-  ADMIN
-  USER
-  MANAGER
+model Post {
+  postId String @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
+
+  writer   User   @relation("USER_WRITE_POST", fields: [writerId], references: [userId])
+  writerId String @db.ObjectId
+
+  comments Comment[]
+
+  @@map("post")
 }

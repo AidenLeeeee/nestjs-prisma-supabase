@@ -9,7 +9,7 @@ export class MongoService {
         return await this.prisma.user.findMany({});
     }
 
-    async createUser() {
+    async createUser(payload?) {
         const newUser = await this.prisma.user.create({
             data: {
                 age: 0,
