@@ -1,77 +1,24 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("SUPABASE_URL")
-  schemas  = ["study", "statistic", "sub", "test"]
-}
-
-enum PROVIDER {
-  KAKAO
-  NAVER
-  GOOGLE
-  ETC
-
-  @@schema("study")
+  provider = "mongodb"
+  url      = env("DATABASE_URL_MONGO")
 }
 
 model User {
-  userId   Int      @id @default(autoincrement()) @map("USER_ID")
-  name     String   @default("unknown name") @map("NAME") @db.VarChar(10)
-  provider PROVIDER @default(ETC) @map("PROVIDER")
-  email    String   @default(uuid()) @map("EMAIL") @db.VarChar(50)
-  profile  String   @map("PROFILE") @db.Text
+  userId    Int      @id @map("_id")
+  age       Int      @db.Int
+  height    Float    @db.Double
+  createdAt DateTime @default(now()) @db.Timestamp
+  role      Role
 
-  posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
-  userInfo UserInfo? @relation("USER_DETAIL_INFO")
-
-  @@unique(name: "USER_PROVIDER_EMAIL_UNIQ", fields: [provider, email])
-  @@map("USER")
-  @@schema("study")
+  @@map("user")
 }
 
-model Post {
-  postId   Int    @id @default(autoincrement()) @map("POST_ID")
-  content  String @map("CONTENT") @db.Text
-  writerId Int?   @map("WRITER_ID")
-
-  writer User? @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
-
-  @@map("POST")
-  @@schema("study")
-}
-
-model UserInfo {
-  userId    Int      @id @map("USER_ID")
-  height    String   @map("HEIGHT") @db.Char(3)
-  weight    Int      @map("WEIGHT") @db.Integer
-  address   String   @map("ADDRESS") @db.Text
-  createdAt DateTime @default(now()) @db.Timestamptz()
-  updatedAt DateTime @updatedAt
-
-  user User @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
-
-  @@map("USER_INFO")
-  @@schema("study")
-}
-
-model TestTable {
-  id Int @id @map("TEST_ID")
-
-  @@schema("test")
-}
-
-model SubTable {
-  id Int @id @map("SUB_ID")
-
-  @@schema("sub")
-}
-
-model StatisticTable {
-  id Int @id @map("STATISTIC_ID")
-
-  @@schema("statistic")
+enum Role {
+  ADMIN
+  USER
+  MANAGER
 }
