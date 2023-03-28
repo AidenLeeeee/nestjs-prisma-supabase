@@ -1,7 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { MongoService } from './mongo.service';
 
 @Controller()
 export class MongoController {
-    constructor(private readonly appService: MongoService) {}
+    constructor(private readonly mongoService: MongoService) {}
+
+    @Get('user')
+    getUsers() {
+        return this.mongoService.getUsers();
+    }
+
+    @Post('user')
+    createUser() {
+        return this.mongoService.createUser();
+    }
 }

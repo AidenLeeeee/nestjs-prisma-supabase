@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  userId    Int      @id @map("_id")
+  userId    String   @id @default(auto()) @map("_id") @db.ObjectId
   age       Int      @db.Int
   height    Float    @db.Double
   createdAt DateTime @default(now()) @db.Timestamp
