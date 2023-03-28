@@ -1,4 +1,5 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { UserEntity } from 'src/entities/user.entity';
 import { MongoService } from './mongo.service';
 
 @Controller()
@@ -11,7 +12,13 @@ export class MongoController {
     }
 
     @Post('user')
-    createUser() {
-        return this.mongoService.createUser();
+    createUser(@Body() body) {
+        console.log(body);
+        const payload = new UserEntity.Builder()
+            .age(body.age)
+            .height(body.height)
+            .build();
+        return payload;
+        // return this.mongoService.createUser();
     }
 }
