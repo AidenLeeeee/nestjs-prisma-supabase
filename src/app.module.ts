@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import * as Joi from 'joi';
+import { MongoModule } from './mongo/mongo.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        SUPABASE_URL: Joi.string().required(),
-      }),
-    }),
-    PrismaModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            validationSchema: Joi.object({
+                SUPABASE_URL: Joi.string().required(),
+                DATABASE_URL_MONGO: Joi.string().required(),
+            }),
+        }),
+        PrismaModule,
+        MongoModule,
+    ],
 })
 export class AppModule {}
