@@ -24,9 +24,12 @@ export class MongoController {
 
     @Post('post')
     createPost(@Body() body) {
-        const payload = new PostEntity.Builder().title(body.title).build();
-        return payload;
+        const payload = new PostEntity.Builder()
+            .title(body.title)
+            .writerId(body.writerId)
+            .comments(body.comments)
+            .build();
 
-        // return this.mongoService.createPost(payload);
+        return this.mongoService.createPost(payload);
     }
 }

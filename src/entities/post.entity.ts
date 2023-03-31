@@ -43,6 +43,11 @@ export class PostEntity {
             return this;
         }
 
+        writerId(writerId: ObjectId) {
+            this._writerId = writerId;
+            return this;
+        }
+
         writer(writerId: ObjectId, writer: UserEntity) {
             if (!(writer instanceof UserEntity)) {
                 throw new BadRequestException('writer must be user.');
@@ -56,7 +61,7 @@ export class PostEntity {
             if (!Array.isArray(val)) {
                 throw new BadRequestException('comment must be array type.');
             }
-            val.map((comment) => this._comments.push(comment));
+            this._comments = val;
             return this;
         }
 
