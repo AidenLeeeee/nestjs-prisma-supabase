@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { PostEntity } from 'src/entities/post.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { MongoService } from './mongo.service';
@@ -31,5 +31,20 @@ export class MongoController {
             .build();
 
         return this.mongoService.createPost(payload);
+    }
+
+    @Get('search')
+    getResult(@Query('keyword') keyword) {
+        return this.mongoService.getResult(keyword);
+    }
+
+    @Post('search')
+    createKeyword(@Body('keyword') keyword) {
+        return this.mongoService.createKeyword(keyword);
+    }
+
+    @Patch('search')
+    addAndSearch(@Body('keyword') keyword, @Query('before') before) {
+        return this.mongoService.addAndSearch(keyword, before);
     }
 }

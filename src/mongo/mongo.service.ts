@@ -48,4 +48,66 @@ export class MongoService {
 
         return newPost;
     }
+
+    async getResult(query) {
+        const data = await this.prisma.search.findMany({
+            where: {
+                keywords: {
+                    has: query,
+                },
+            },
+        });
+
+        const result = await this.prisma.search.findMany({
+            where: {
+                OR: [
+                    {
+                        keyword: {
+                            in: data.map((e) => e.keyword),
+                        },
+                    },
+                    {
+                        keywords: {
+                            hasSome: data.map((e) => e.keyword),
+                        },
+                    },
+                ],
+            },
+        });
+
+        return result.map((e) => ({ keyword: e.keyword }));
+    }
+
+    async createKeyword(keyword) {
+        const exKeyword = await this.prisma.search.findUnique({
+            where: {
+                keyword,
+            },
+        });
+
+        if (!exKeyword) {
+            return this.prisma.search.create({
+                data: {
+                    keyword,
+                },
+            });
+        }
+
+        return exKeyword;
+    }
+
+    async addAndSearch(keyword, before) {
+        return this.prisma.$transaction(async (ctx) => {
+            return ctx.search.update({
+                where: {
+                    keyword,
+                },
+                data: {
+                    keywords: {
+                        push: before,
+                    },
+                },
+            });
+        });
+    }
 }

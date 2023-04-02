@@ -42,3 +42,8 @@ model Post {
 
   @@map("post")
 }
+
+model Search {
+  keyword  String   @id @map("_id")
+  keywords String[]
+}
